@@ -1,0 +1,93 @@
+---
+title: "PENGUINS PALMER STATION, ANTARCTICA"
+subtitle: "Coursera04_Project"
+author: "Oscar Alonso"
+date: "`r Sys.Date()`"
+format: revealjs
+editor: visual
+---
+
+```{r}
+# Cargar librerias
+# install.packages("palmerpenguins")
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(caret)
+library(leaflet)
+```
+
+## INTRODUCTION AND MOTIVATION
+
+Let's use the studio about size measurements for adult foraging penguins near Palmer Station, Antarctica. We use this free dataframe to be able to carry out the project corresponding to course 4.
+
+```{r message=FALSE, warning=FALSE, comment="", fig.align='center', fig.height=4, fig.width=8}
+my_map <- leaflet() %>%
+  addTiles() %>%
+  addMarkers(lat=-64.774167, lng=-64.053056,popup="Palmer Station, Antarctica") %>% 
+  addMarkers(lat=-64.7666636 , lng=-64.083333,popup="Torgesen Island") %>% 
+  addMarkers(lat=-65.4333316 , lng=-65.499998,popup="Biscoe Island") %>%
+  addMarkers(lat=-64.7333304 , lng=-64.2333324,popup="Dream Island")
+my_map
+```
+
+## DATA COLLECTION
+
+We use data directly from the **"palmerpenguins"** package. We show the type of information that our study datafreme has.
+
+```{r message=FALSE, warning=FALSE, comment="", fig.align='center', fig.height=4, fig.width=8}
+# Limpiar datos
+penguins <- penguins %>%
+  na.omit()
+# Resumen de datos
+# summary(penguins)
+str(penguins)
+```
+
+## TYPES OF PENGUINS AND CHARACTERISTICS
+
+![](images/Penguins.JPG){fig-align="center" width="663"}
+
+![](images/culmen_depth.png){fig-align="center" width="466"}
+
+## SCATTER PLOT CHART
+
+In the **shiny application** we can determine the characteristics under study for comparison by year and island, as well as the graph model.
+
+```{r message=FALSE, warning=FALSE, comment="", fig.align='center', fig.height=4, fig.width=8}
+g5 <- ggplot(penguins, aes(x=bill_length_mm, y=body_mass_g, color=species))+
+    geom_point(aes(shape=sex))+
+            facet_grid(year ~ island)+
+            theme (axis.text.x = element_text(hjust=1,face="bold", colour="black", size=rel(0.9)),
+                   axis.text.y = element_text(hjust=1,face="bold", colour="black", size=rel(0.9)))+
+            labs(title = "PENGUINS STUDY",
+                 subtitle = "ISLANDS AND YEAR OF STUDY")
+#g5
+ggplotly(g5)
+```
+
+## BOXPLOT CHART
+
+With a box plot we can know visually and intuitively if there is a difference between species.
+
+```{r message=FALSE, warning=FALSE, comment="", fig.align='center', fig.height=4, fig.width=8}
+g6 <- ggplot(penguins, aes(x=bill_length_mm, y=body_mass_g, color=species))+
+  geom_boxplot(aes(fill = sex), alpha=0.5, size = 0.75)+
+  facet_grid(year ~ island)+
+  theme (axis.text.x = element_text(hjust=1,face="bold", colour="black", size=rel(0.9)),
+                   axis.text.y = element_text(hjust=1,face="bold", colour="black", size=rel(0.9)))+
+            labs(title = "PENGUINS STUDY",
+                 subtitle = "ISLANDS AND YEAR OF STUDY")
+g6
+```
+
+## 3D CHART
+
+Another form of visualization that is interesting is a 3D graph. Allows you to view several features at the same time.
+
+```{r message=FALSE, warning=FALSE, comment="", fig.align='center', fig.height=4, fig.width=8}
+g3 <- plot_ly(penguins, z=~body_mass_g, x=~bill_length_mm, y=~bill_depth_mm, color=~species) %>% 
+  add_markers()
+g3
+```
